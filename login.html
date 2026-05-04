@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKE-IT — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Decorative speed lines from center */
+    .login-bg-lines {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: repeating-conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg, transparent 5.5deg,
+        rgba(0,0,0,0.012) 5.5deg, rgba(0,0,0,0.012) 6deg
+      );
+    }
+    .panel-diagonal {
+      position: fixed; top: 0; left: 0;
+      width: 45%; height: 100%;
+      background: var(--ink);
+      clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+    .tab-active { background: var(--ink) !important; color: var(--paper) !important; }
+    .tab-inactive { background: var(--paper2) !important; color: var(--ink) !important; opacity: 0.7; }
+    .active-tool { background: var(--ink); color: var(--paper); }
+  </style>
+</head>
+<body class="halftone-bg page-wrapper" style="min-height:100vh; overflow:hidden;">
+  <div class="login-bg-lines"></div>
+  <div class="panel-diagonal"></div>
+
+  <!-- Theme Toggle -->
+  <div style="position:fixed; top:20px; right:20px; z-index:50; display:flex; align-items:center; gap:10px;">
+    <span style="font-family:var(--font-hand); font-size:0.85rem; opacity:0.7;" class="z-content">THEME</span>
+    <button class="theme-toggle" data-icon="🌙" title="Toggle Theme"></button>
+  </div>
+
+  <!-- Left Decorative Panel (desktop only) -->
+  <div class="z-content" style="position:fixed; left:0; top:0; width:42%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; z-index:1;">
+    <div style="text-align:center; padding:40px;">
+      <div class="title-display flicker" style="font-size:clamp(3rem,7vw,5.5rem); color:var(--paper); line-height:1; text-shadow: 4px 4px 0 rgba(0,0,0,0.5);">
+        SKE-IT
+      </div>
+      <div style="font-family:var(--font-hand); color:var(--paper); opacity:0.8; font-size:1.1rem; margin-top:10px;">
+        Sketch. Guess. Win.
+      </div>
+
+      <!-- Decorative manga panel icons -->
+      <div style="margin-top:40px; display:flex; flex-direction:column; gap:16px; align-items:center;">
+        <div class="speech-bubble" style="max-width:220px;">
+          <span style="font-family:var(--font-hand); font-size:0.95rem;">Draw anything!</span>
+        </div>
+        <div style="margin-top:32px; font-size:4rem; filter:drop-shadow(3px 3px 0 rgba(255,255,255,0.3));">✏️</div>
+      </div>
+
+      <!-- Small decorative panels -->
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:40px;">
+        <div style="width:40px; height:40px; border:3px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🎨</div>
+        <div style="width:40px; height:40px; border:3px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🏆</div>
+        <div style="width:40px; height:40px; border:3px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem;">⚡</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Auth Card -->
+  <div class="z-content" style="position:absolute; right:0; top:0; width:58%; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px 40px 20px 20px;">
+    <div class="manga-card z-content" style="width:100%; max-width:460px; padding:0; overflow:visible;">
+
+      <!-- Card Header / Tabs -->
+      <div style="display:flex; border-bottom:var(--border-thick);">
+        <button id="tab-login" class="tab-active" onclick="switchTab('login')"
+          style="flex:1; padding:16px; font-family:var(--font-display); font-size:1.4rem; letter-spacing:2px; cursor:pointer; border:none; border-right:var(--border-thick); transition:all 0.2s;">
+          LOGIN
+        </button>
+        <button id="tab-signup" class="tab-inactive" onclick="switchTab('signup')"
+          style="flex:1; padding:16px; font-family:var(--font-display); font-size:1.4rem; letter-spacing:2px; cursor:pointer; border:none; transition:all 0.2s;">
+          SIGN UP
+        </button>
+      </div>
+
+      <!-- Card Body -->
+      <div style="padding:36px 32px;">
+
+        <!-- Error / Success Messages -->
+        <div id="auth-error" class="manga-card" style="display:none; padding:10px 16px; margin-bottom:20px; background:var(--ink); color:var(--paper); font-family:var(--font-hand); font-size:0.95rem;">
+          ❌ Error
+        </div>
+        <div id="auth-success" class="manga-card" style="display:none; padding:10px 16px; margin-bottom:20px; font-family:var(--font-hand); font-size:0.95rem;">
+          ✅ Success
+        </div>
+
+        <!-- ===== LOGIN FORM ===== -->
+        <div id="form-login">
+          <div style="margin-bottom:20px;">
+            <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">USERNAME OR EMAIL</label>
+            <input id="login-user" type="text" class="manga-input" placeholder="your_username" autocomplete="username" />
+          </div>
+          <div style="margin-bottom:24px;">
+            <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">PASSWORD</label>
+            <input id="login-pass" type="password" class="manga-input" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <button id="login-btn" class="btn-manga" style="width:100%; font-size:1.6rem; padding:14px;" onclick="handleLogin()">
+            LET'S DRAW!
+          </button>
+          <div style="text-align:center; margin-top:16px;">
+            <button onclick="switchTab('signup')" style="background:none; border:none; cursor:pointer; font-family:var(--font-hand); color:var(--ink); opacity:0.6; font-size:0.9rem; text-decoration:underline;">
+              No account? Sign up →
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== SIGNUP FORM ===== -->
+        <div id="form-signup" style="display:none;">
+          <div style="margin-bottom:16px;">
+            <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">USERNAME</label>
+            <input id="signup-user" type="text" class="manga-input" placeholder="cool_artist_99" autocomplete="username" />
+          </div>
+          <div style="margin-bottom:16px;">
+            <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">EMAIL</label>
+            <input id="signup-email" type="email" class="manga-input" placeholder="you@email.com" autocomplete="email" />
+          </div>
+          <div style="margin-bottom:24px;">
+            <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">PASSWORD</label>
+            <input id="signup-pass" type="password" class="manga-input" placeholder="min 6 characters" autocomplete="new-password" />
+          </div>
+          <button class="btn-manga" style="width:100%; font-size:1.6rem; padding:14px;" onclick="handleSignUp()">
+            JOIN THE BATTLE!
+          </button>
+          <div style="text-align:center; margin-top:16px;">
+            <button onclick="switchTab('login')" style="background:none; border:none; cursor:pointer; font-family:var(--font-hand); color:var(--ink); opacity:0.6; font-size:0.9rem; text-decoration:underline;">
+              Already have an account? Login →
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /card body -->
+
+      <!-- Card Footer -->
+      <div style="border-top:var(--border-thick); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; background:var(--paper2);">
+        <span style="font-family:var(--font-hand); font-size:0.8rem; opacity:0.5;">✏️ SKE-IT v1.0</span>
+        <a href="leaderboard.html" style="font-family:var(--font-hand); font-size:0.8rem; color:var(--ink); opacity:0.7; text-decoration:none;">🏆 Leaderboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile layout override -->
+  <style>
+    @media (max-width: 768px) {
+      .panel-diagonal { display: none; }
+      div[style*="width:42%"] { display: none !important; }
+      div[style*="width:58%"] { width: 100% !important; padding: 20px !important; }
+    }
+  </style>
+
+  <script src="auth.js"></script>
+  <script>
+    function switchTab(tab) {
+      document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+      document.getElementById('tab-login').className = tab === 'login' ? 'tab-active' : 'tab-inactive';
+      document.getElementById('tab-signup').className = tab === 'signup' ? 'tab-active' : 'tab-inactive';
+      clearMessages();
+    }
+
+    async function handleLogin() {
+      clearMessages();
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      const btn = document.getElementById('login-btn');
+      btn.textContent = 'LOADING...'; btn.disabled = true;
+      try {
+        await Auth.signIn(user, pass);
+        showSuccess('✅ Welcome back! Loading game...');
+        setTimeout(() => window.location.href = 'game.html', 800);
+      } catch (e) {
+        showError(e.message);
+        btn.textContent = "LET'S DRAW!"; btn.disabled = false;
+      }
+    }
+
+    async function handleSignUp() {
+      clearMessages();
+      const user = document.getElementById('signup-user').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const pass = document.getElementById('signup-pass').value;
+      try {
+        await Auth.signUp(user, email, pass);
+        showSuccess('✅ Account created! Starting game...');
+        setTimeout(() => window.location.href = 'game.html', 800);
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const loginVisible = document.getElementById('form-login').style.display !== 'none';
+        if (loginVisible) handleLogin(); else handleSignUp();
+      }
+    });
+
+    // Redirect if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Session.isLoggedIn()) window.location.href = 'game.html';
+    });
+  </script>
+</body>
+</html>
