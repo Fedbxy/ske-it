@@ -1,0 +1,24 @@
+{
+  "name": "ske-it",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Fedbxy/ske-it#readme",
+  "bugs": {
+    "url": "https://github.com/Fedbxy/ske-it/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fedbxy/ske-it.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1"
+  }
+}
