@@ -1,29 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Express App</title>
-    <style>
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: 0 auto; }
-        .container { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
-        nav { margin-bottom: 20px; }
-        a { margin-right: 10px; color: #007bff; text-decoration: none; }
-    </style>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ske-It Leaderboard</title>
+        <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/users">View Users</a>
-    </nav>
+        <main class="container">
+                <h1>Ske-It Global Leaderboard</h1>
+                <p class="subtitle">Persisted with MongoDB for your drawing game rounds.</p>
 
-    <div class="container">
-        <!-- This displays the 'message' variable from your route -->
-        <h1><%= message %></h1>
-        
-        <p>Welcome to your first Express app using EJS. This page is being served dynamically from your <code>views/</code> directory.</p>
-        
-        <p>Current Time: <%= new Date().toLocaleTimeString() %></p>
-    </div>
+                <section class="panel">
+                        <h2>Save Score</h2>
+                        <form id="scoreForm">
+                                <label for="playerName">Player name</label>
+                                <input id="playerName" name="playerName" required maxlength="30" />
+
+                                <label for="score">Score</label>
+                                <input id="score" name="score" type="number" min="0" required />
+
+                                <label for="roundsPlayed">Rounds played</label>
+                                <input id="roundsPlayed" name="roundsPlayed" type="number" min="0" value="0" />
+
+                                <button type="submit">Submit score</button>
+                        </form>
+                        <p id="formMessage"></p>
+                </section>
+
+                <section class="panel">
+                        <h2>Top Players</h2>
+                        <ol id="leaderboardList">
+                                <% topScores.forEach((entry) => { %>
+                                        <li>
+                                                <strong><%= entry.playerName %></strong>
+                                                <span><%= entry.score %> pts</span>
+                                                <small>(<%= entry.roundsPlayed %> rounds)</small>
+                                        </li>
+                                <% }) %>
+                        </ol>
+                </section>
+        </main>
+
+        <script>
+            const form = document.getElementById("scoreForm");
+            const message = document.getElementById("formMessage");
+            const leaderboardList = document.getElementById("leaderboardList");
+
+            async function refreshLeaderboard() {
+                const response = await fetch("/api/leaderboard?limit=10");
+                const data = await response.json();
+
+                leaderboardList.innerHTML = "";
+
+                data.leaderboard.forEach((entry) => {
+                    const item = document.createElement("li");
+
+                                        const name = document.createElement("strong");
+                                        name.textContent = entry.playerName;
+
+                                        const score = document.createElement("span");
+                                        score.textContent = entry.score + " pts";
+
+                                        const rounds = document.createElement("small");
+                                        rounds.textContent = "(" + entry.roundsPlayed + " rounds)";
+
+                                        item.appendChild(name);
+                                        item.appendChild(score);
+                                        item.appendChild(rounds);
+                    leaderboardList.appendChild(item);
+                });
+            }
+
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const payload = {
+                    playerName: formData.get("playerName"),
+                    score: Number(formData.get("score")),
+                    roundsPlayed: Number(formData.get("roundsPlayed")),
+                };
+
+                const response = await fetch("/api/leaderboard", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                const result = await response.json();
+                message.textContent = result.message;
+
+                if (response.ok) {
+                    form.reset();
+                    await refreshLeaderboard();
+                }
+            });
+        </script>
 </body>
 </html>
