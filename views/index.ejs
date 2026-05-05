@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Express App</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .container { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        nav { margin-bottom: 20px; }
+        a { margin-right: 10px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/users">View Users</a>
+    </nav>
+
+    <div class="container">
+        <!-- This displays the 'message' variable from your route -->
+        <h1><%= message %></h1>
+        
+        <p>Welcome to your first Express app using EJS. This page is being served dynamically from your <code>views/</code> directory.</p>
+        
+        <p>Current Time: <%= new Date().toLocaleTimeString() %></p>
+    </div>
+</body>
+</html>
