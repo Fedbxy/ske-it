@@ -3,8 +3,6 @@
 // ======= CONFIGURATION =======
 const CONFIG = {
   TOTAL_GAME_TIME: 120,     // 2 minutes total game time
-  POINTS_CORRECT: 100,      // base points for correct guess
-  POINTS_BONUS_TIME: 1,     // bonus points per second remaining
   AI_CONFIDENCE_THRESHOLD: 0.75, // STRICT: require 75% confidence
   SUBMISSION_COOLDOWN: 4000, // 4 seconds between submissions to avoid Gemini rate limits
 };
@@ -455,15 +453,11 @@ async function submitDrawing() {
     if (btn) { btn.disabled = false; btn.textContent = 'SUBMIT!'; btn.classList.remove('scanning'); }
 
     if (result.isCorrect) {
-      const bonus = Math.floor(GameState.timeLeft * CONFIG.POINTS_BONUS_TIME);
-      const earned = CONFIG.POINTS_CORRECT + bonus;
+      const earned = result.score || 100; // Use AI score directly
       GameState.wordsCorrect++;
       GameState.totalScore += earned;
       GameState.isSubmitting = false;
       updateRoundDisplay();
-
-      // Save score
-      if (typeof Auth !== 'undefined') Auth.updateScore(earned);
 
       const aiAnalysis = result.guess && result.guess !== 'error' ? `\nAI saw: "${result.guess}"` : '';
       showEffect(

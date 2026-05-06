@@ -36,23 +36,39 @@ export async function analyzeDrawing(req, res, next) {
 
   console.log(`[AI] Analyzing drawing for word: "${targetWord}"`);
 
-  const prompt = `Look at this sketch drawing carefully. It was drawn by a human playing a Pictionary-style game.
+  const prompt = `You are an AI referee for a Pictionary-style game. 
+Analyze the provided user sketch.
 
-The player is trying to draw: "${targetWord}"
+STEP 1: VISUAL ANALYSIS
+List the specific visual elements, shapes, and objects you see in the image. Do not assume you know the target word yet.
 
-TASK:
-1. EXAMINE the image: List the specific visual elements you see.
-2. INDEPENDENT GUESS: Based ONLY on these visual elements, what is your first, unbiased guess?
-3. COMPARE: The player intended to draw "${targetWord}".
-4. FINAL VERDICT: Is the drawing actually recognizable as "${targetWord}"?
+STEP 2: UNBIASED GUESS
+Based solely on the visual evidence from Step 1, provide your primary guess of what this drawing represents.
+
+STEP 3: TARGET COMPARISON
+The player was instructed to draw: "${targetWord}". 
+Compare your visual analysis to the target word. 
+
+STEP 4: SCORING (BASE QUALITY)
+Grade the drawing's quality from 0 to 100. This is a strict linear scale.
+100 = Perfect, highly detailed, unambiguous.
+75 = Clearly recognizable with moderate detail.
+50 = Recognizable but lacks detail.
+25 = Recognizable but overly simplistic.
+10 = Barely recognizable, ambiguous.
+0 = Completely unrecognizable or blank.
+
+STEP 5: VERDICT
+Determine if the drawing is recognizable as "${targetWord}". Set to true if the score is 25 or higher, otherwise false.
 
 RESPONSE FORMAT:
-Respond ONLY in this JSON format (no markdown, no extra text):
+Output strictly in the following JSON format.
 {
-  "guess": "your best guess",
-  "confidence": 0.0 to 1.0,
-  "isCorrect": true or false,
-  "feedback": "one short encouraging sentence"
+  "reasoning": "Briefly output your Step 1 and Step 3 analysis here.",
+  "guess": "Your Step 2 guess",
+  "score": integer between 0 and 100,
+  "isCorrect": boolean,
+  "feedback": "One short encouraging sentence for the player."
 }`;
 
   let attempts = 0;
@@ -80,12 +96,22 @@ Respond ONLY in this JSON format (no markdown, no extra text):
       // Clean and parse JSON
       const cleaned = rawText.replace(/```json|```/g, "").trim();
       const jsonResult = JSON.parse(cleaned);
+      
+      // AI gives a linear score from 0 to 100
+      const linearScore = Math.max(0, Math.min(100, Number(jsonResult.score) || 0));
 
-      console.log(`[AI] Decoded result: guess="${jsonResult.guess}", isCorrect=${jsonResult.isCorrect}, confidence=${jsonResult.confidence}`);
+      // Apply exponential transformation to map 0-100 to 0-500
+      // We use a power curve (quadratic) to reward high scores exponentially more than average ones.
+      // linearScore = 0   => 500 * (0)^2 = 0
+      // linearScore = 50  => 500 * (0.5)^2 = 125
+      // linearScore = 100 => 500 * (1)^2 = 500
+      const expScore = Math.round(500 * Math.pow(linearScore / 100, 2));
+
+      console.log(`[AI] Decoded result: guess="${jsonResult.guess}", isCorrect=${jsonResult.isCorrect}, linearScore=${linearScore}, expScore=${expScore}`);
 
       return res.status(200).json({
         guess: jsonResult.guess || "unknown",
-        confidence: jsonResult.confidence || 0,
+        score: expScore,
         isCorrect: jsonResult.isCorrect === true,
         feedback: jsonResult.feedback || "",
         demo: false,

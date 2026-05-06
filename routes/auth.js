@@ -6,7 +6,6 @@ import {
   signin,
   logout,
   getSession,
-  updateScore,
   getLeaderboard
 } from "../controllers/authController.js";
 
@@ -21,9 +20,6 @@ router.post("/logout", logout);
 
 // GET /auth/session
 router.get("/session", getSession);
-
-// POST /auth/update-score
-router.post("/update-score", updateScore);
 
 // GET /auth/leaderboard
 router.get("/leaderboard", getLeaderboard);

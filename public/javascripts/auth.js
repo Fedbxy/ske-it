@@ -82,30 +82,6 @@ const Auth = {
   },
 
   /**
-   * Update score after a game
-   */
-  async updateScore(points) {
-    const user = this.get();
-    if (!user) return;
-
-    try {
-      const resp = await fetch('/auth/update-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points })
-      });
-
-      const data = await resp.json();
-      if (resp.ok) {
-        sessionStorage.setItem('skeit_user', JSON.stringify(data.user));
-        return data.user;
-      }
-    } catch (err) {
-      console.error('Update score error:', err);
-    }
-  },
-
-  /**
    * Get leaderboard data
    */
   async getLeaderboard(limit = 20) {

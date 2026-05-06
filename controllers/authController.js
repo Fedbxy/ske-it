@@ -153,47 +153,6 @@ export async function getSession(req, res, next) {
 }
 
 /**
- * POST /auth/update-score — Update user's career total score (called per correct word)
- */
-export async function updateScore(req, res, next) {
-  try {
-    if (!req.session.user) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    const { points } = req.body;
-    if (typeof points !== "number" || points < 0) {
-      return res.status(400).json({ message: "Invalid points" });
-    }
-
-    const user = await User.findByIdAndUpdate(
-      req.session.user.id,
-      {
-        $inc: { score: points },
-      },
-      { new: true }
-    );
-
-    console.log(`[Stats] Score incremented for ${user.username}: +${points} (Total: ${user.score})`);
-
-    // Update session
-    req.session.user.score = user.score;
-
-    res.status(200).json({
-      message: "Score updated",
-      user: {
-        id: user._id.toString(),
-        username: user.username,
-        score: user.score,
-      },
-    });
-  } catch (error) {
-    console.error("[Stats] Update score error:", error);
-    next(error);
-  }
-}
-
-/**
  * POST /api/leaderboard (Redirection target) — Record game completion
  */
 export async function submitGame(req, res, next) {
@@ -206,13 +165,18 @@ export async function submitGame(req, res, next) {
       const user = await User.findById(req.session.user.id);
       if (user) {
         user.gamesPlayed += 1;
+        user.score += gameScore; // Add to career total
+        
         const oldHighScore = user.highScore;
         if (gameScore > user.highScore) {
           user.highScore = gameScore;
         }
         await user.save();
         
-        console.log(`[Stats] Game ended for ${user.username}: Score ${gameScore} (New HighScore: ${user.highScore > oldHighScore ? 'YES' : 'NO'})`);
+        // Update session
+        req.session.user.score = user.score;
+        
+        console.log(`[Stats] Game ended for ${user.username}: Score ${gameScore} (Total: ${user.score}, New HighScore: ${user.highScore > oldHighScore ? 'YES' : 'NO'})`);
 
         return res.status(200).json({ 
           message: "Game recorded", 
