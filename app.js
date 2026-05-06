@@ -15,8 +15,10 @@ app.set("view engine", "ejs");
 
 import routes from "./routes/index.js";
 import apiRoutes from "./routes/api.js";
+import gameRoutes from "./routes/gameRoutes.js";
 app.use("/", routes);
 app.use("/api", apiRoutes);
+app.use("/api/games", gameRoutes);
 
 connectToDatabase()
   .then(() => {
