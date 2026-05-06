@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKE-IT — Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+    }
+
+    .game-header {
+      padding: 16px 24px;
+      background: var(--paper2);
+      border-bottom: var(--border-thick);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .game-stats {
+      display: flex;
+      gap: 32px;
+      font-family: var(--font-display);
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-label {
+      font-family: var(--font-hand);
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .timer-critical {
+      animation: pulse 0.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .game-content {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .canvas-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .canvas-wrapper {
+      flex: 1;
+      background: white;
+      border: 3px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      cursor: crosshair;
+      position: relative;
+      border-radius: 0;
+    }
+
+    #drawing-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: inherit;
+    }
+
+    .word-display {
+      padding: 16px;
+      background: var(--paper2);
+      border: var(--border-thick);
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+    }
+
+    .hint-text {
+      padding: 8px 16px;
+      background: var(--paper2);
+      border: 1px solid var(--ink);
+      font-family: var(--font-hand);
+      font-size: 0.95rem;
+      min-height: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px;
+      background: var(--paper2);
+      border: var(--border-thick);
+    }
+
+    .btn-tool {
+      padding: 8px 12px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-hand);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .btn-tool:hover {
+      background: var(--paper2);
+    }
+
+    .btn-tool.active-tool {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .btn-tool:active {
+      box-shadow: 0 0 0 var(--ink);
+      transform: translate(2px, 2px);
+    }
+
+    .brush-sizes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .sidebar {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-panel {
+      background: var(--paper2);
+      border: var(--border-thick);
+      padding: 12px;
+      font-family: var(--font-hand);
+    }
+
+    .sidebar-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      border-bottom: var(--border-thick);
+      padding-bottom: 6px;
+    }
+
+    .sidebar-btn {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 6px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-hand);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .sidebar-btn:hover {
+      background: var(--paper2);
+    }
+
+    .sidebar-btn:active {
+      box-shadow: 0 0 0 var(--ink);
+      transform: translate(2px, 2px);
+    }
+
+    .sidebar-btn.logout {
+      background: #ffcccc;
+    }
+
+    .effect-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    .effect-text {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 0 var(--ink);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .effect-subtitle {
+      font-family: var(--font-hand);
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    .scanning {
+      animation: scan 0.8s infinite;
+    }
+
+    @keyframes scan {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 160px;
+      }
+      .game-stats {
+        gap: 16px;
+      }
+      .stat-value {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .game-content {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .sidebar-panel {
+        flex: 1;
+        min-width: 140px;
+      }
+    }
+  </style>
+</head>
+<body class="halftone-bg" style="margin: 0; padding: 0;">
+  <div class="game-container">
+    <!-- Header -->
+    <div class="game-header">
+      <div style="font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 2px;">SKE-IT</div>
+      
+      <div class="game-stats">
+        <div class="stat">
+          <div class="stat-label">ROUND</div>
+          <div class="stat-value" id="round-display">1/5</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">TIME</div>
+          <div class="stat-value" id="timer-display">02:00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">SCORE</div>
+          <div class="stat-value" id="score-display">0</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="theme-toggle" data-icon="🌙" title="Toggle Theme" style="border: 2px solid var(--ink); background: var(--paper2); padding: 6px 10px; cursor: pointer;"></button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="game-content">
+      <!-- Canvas Section -->
+      <div class="canvas-section">
+        <div class="word-display" id="current-word">Draw: SOMETHING!</div>
+        <div class="canvas-wrapper">
+          <canvas id="drawing-canvas"></canvas>
+        </div>
+        <div class="hint-text" id="hint-text"></div>
+        <div class="toolbar">
+          <button id="draw-btn" class="btn-tool active-tool" onclick="setEraseMode(false)">✏️ DRAW</button>
+          <button id="erase-btn" class="btn-tool" onclick="setEraseMode(true)">🧹 ERASE</button>
+          <button id="clear-btn" class="btn-tool" onclick="clearCanvas()">🗑️ CLEAR</button>
+          <button id="skip-btn" class="btn-tool">⏩ SKIP</button>
+          <div style="flex: 1;"></div>
+          <div class="brush-sizes">
+            <button class="btn-tool brush-btn" data-size="2" onclick="setBrushSize(2)">●</button>
+            <button class="btn-tool brush-btn" data-size="4" onclick="setBrushSize(4)">●●</button>
+            <button class="btn-tool brush-btn" data-size="8" onclick="setBrushSize(8)">●●●</button>
+            <button class="btn-tool brush-btn" data-size="12" onclick="setBrushSize(12)">●●●●</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-panel">
+          <div class="sidebar-title">ACTIONS</div>
+          <button id="submit-btn" class="sidebar-btn" onclick="submitDrawing()" style="background: #ccffcc; font-weight: bold; font-size: 1.1rem;">✓ SUBMIT!</button>
+        </div>
+
+        <div class="sidebar-panel">
+          <div class="sidebar-title">TIPS</div>
+          <div style="font-size: 0.85rem; line-height: 1.4; opacity: 0.8;">
+            • Draw clear shapes<br/>
+            • Use all the space<br/>
+            • Add details<br/>
+            • Be confident!
+          </div>
+        </div>
+
+        <div class="sidebar-panel">
+          <div class="sidebar-title">LEADERBOARD</div>
+          <a href="/leaderboard" class="sidebar-btn" style="text-decoration: none; text-align: center; padding: 12px; display: block;">🏆 View Top Scores</a>
+        </div>
+
+        <div style="flex: 1;"></div>
+
+        <button id="logout-btn" class="sidebar-btn logout" onclick="logout()">🚪 LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/javascripts/auth.js"></script>
+  <script src="/javascripts/game.js"></script>
+  <script>
+    async function logout() {
+      if (!confirm('Are you sure you want to logout?')) return;
+      if (typeof Auth !== 'undefined') {
+        await Auth.signOut();
+        return;
+      }
+      window.location.href = '/login';
+    }
+  </script>
+</body>
+</html>
