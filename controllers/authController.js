@@ -109,6 +109,8 @@ export async function signin(req, res, next) {
       id: user._id.toString(),
       username: user.username,
       score: user.score,
+      highScore: user.highScore,
+      gamesPlayed: user.gamesPlayed,
     };
 
     console.log(`[Auth] User signed in: ${user.username}`);
