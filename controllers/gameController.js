@@ -1,7 +1,7 @@
 import Prompt from "../models/promptModel.js";
 import aiService from "../services/aiService.js";
 
-exports.getRandomPrompt = async (req, res) => {
+export const getRandomPrompt = async (req, res) => {
     // Get one random document from the Prompt collection
     try {
         const count = Prompt.countDocuments();
@@ -20,7 +20,7 @@ exports.getRandomPrompt = async (req, res) => {
     }
 }
 
-exports.startGame = (req, res) => {
+export const startGame = (req, res) => {
     // Store the start time in the user's session or return it to be stored in the frontend
     const startTime = Date.now();
 
@@ -32,7 +32,7 @@ exports.startGame = (req, res) => {
     })
 }
 
-exports.checkDrawing = async (req, res) => {
+export const checkDrawing = async (req, res) => {
     const {drawingData, currentWord} = req.body;
 
     // 1. Talk to AI service

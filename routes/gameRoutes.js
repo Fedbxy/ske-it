@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 // will build this later
-const gameController = require('../controllers/gameController');
+import * as gameController from '../controllers/gameController.js';
 
 /** 
  * @route GET /api/games/prompts
@@ -22,4 +22,4 @@ router.post('/start', gameController.startGame);
  */
 router.post('/submit', gameController.submitDrawing);
 
-modules.exports = router;
+export default router;
