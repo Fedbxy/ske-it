@@ -8,20 +8,9 @@
   <a href="/leaderboard" class="btn-manga" style="text-decoration: none;">🏆 LEADERBOARD</a>
   <a href="/matches" class="btn-manga" style="text-decoration: none; border-color: #555;">📜 MATCH LOG</a>
   <% if (typeof user !== 'undefined' && user) { %>
-    <button class="btn-manga" onclick="logout()" style="background: #ffcccc;">🚪 LOGOUT</button>
+    <button class="btn-manga btn-danger" onclick="logout()">🚪 LOGOUT</button>
   <% } %>
 </div>
-
-<style>
-  .global-nav {
-    margin-top: 30px;
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-</style>
 
 <script>
   if (typeof window.logout !== 'function') {

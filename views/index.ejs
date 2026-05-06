@@ -5,117 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>SKE-IT! - AI Pictionary</title>
         <link rel="stylesheet" href="/styles.css" />
-        <style>
-            .landing-container {
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-                background: var(--paper);
-                color: var(--ink);
-            }
-            .hero-section {
-                text-align: center;
-                max-width: 800px;
-            }
-            .hero-title {
-                font-family: var(--font-display);
-                font-size: clamp(4rem, 10vw, 8rem);
-                margin: 0;
-                line-height: 1;
-                text-shadow: 6px 6px 0 var(--ink);
-                color: var(--ink);
-            }
-            .hero-subtitle {
-                font-family: var(--font-hand);
-                font-size: clamp(1.5rem, 4vw, 2.5rem);
-                margin-top: 10px;
-                margin-bottom: 40px;
-                opacity: 0.9;
-            }
-            .action-buttons {
-                display: flex;
-                gap: 20px;
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-bottom: 60px;
-            }
-            .btn-huge {
-                font-size: 2rem;
-                padding: 20px 40px;
-                border: 4px solid var(--ink);
-                background: var(--paper2);
-                color: var(--ink);
-                font-family: var(--font-display);
-                cursor: pointer;
-                box-shadow: 8px 8px 0 var(--ink);
-                transition: all 0.2s;
-                text-decoration: none;
-            }
-            .btn-huge:hover {
-                background: var(--paper);
-                transform: translate(-2px, -2px);
-                box-shadow: 10px 10px 0 var(--ink);
-            }
-            .btn-huge:active {
-                transform: translate(6px, 6px);
-                box-shadow: 2px 2px 0 var(--ink);
-            }
-            .btn-secondary {
-                font-size: 1.5rem;
-                padding: 20px 30px;
-                border: 4px solid var(--ink);
-                background: transparent;
-                color: var(--ink);
-                font-family: var(--font-display);
-                cursor: pointer;
-                box-shadow: 6px 6px 0 var(--ink);
-                transition: all 0.2s;
-                text-decoration: none;
-            }
-            .btn-secondary:hover {
-                background: var(--ink);
-                color: var(--paper);
-            }
-            .how-to-play {
-                background: var(--paper2);
-                border: 4px solid var(--ink);
-                padding: 30px;
-                max-width: 600px;
-                margin: 0 auto;
-                box-shadow: 6px 6px 0 var(--ink);
-                text-align: left;
-            }
-            .how-to-title {
-                font-family: var(--font-display);
-                font-size: 2rem;
-                border-bottom: 3px solid var(--ink);
-                padding-bottom: 10px;
-                margin-top: 0;
-            }
-            .how-to-list {
-                list-style: none;
-                padding: 0;
-                font-family: var(--font-hand);
-                font-size: 1.3rem;
-            }
-            .how-to-list li {
-                margin-bottom: 15px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-        </style>
+        
 </head>
 <body class="halftone-bg" style="margin: 0;">
     <div class="landing-container">
         <div class="hero-section">
             <h1 class="hero-title">SKE-IT!</h1>
             <p class="hero-subtitle">The Ultimate AI Pictionary Challenge</p>
-            
-            <%- include('partials/nav') %>
 
             <div class="how-to-play" style="margin-top: 40px;">
                 <h2 class="how-to-title">📖 How to Play</h2>
@@ -126,6 +22,8 @@
                     <li>🏆 <strong>Compete</strong> for the top high score on the global leaderboard.</li>
                 </ul>
             </div>
+
+            <%- include('partials/nav') %>
         </div>
     </div>
     <script>

@@ -145,7 +145,7 @@
   </style>
 </head>
 <body class="halftone-bg" style="margin: 0;">
-  <button class="theme-toggle" data-icon="🌙" title="Toggle Theme"></button>
+  <%- include('partials/theme-btn') %>
 
   <div class="dashboard-container">
     <div class="dashboard-header">
@@ -158,7 +158,7 @@
       <!-- Actions Panel -->
       <div class="panel" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
         <div style="font-family: var(--font-hand); font-size: 1.3rem; text-align: center;">Ready to sketch?</div>
-        <a href="/game" class="btn-manga" style="font-size: 1.8rem; padding: 20px 40px; background: #ccffcc;">🔥 PLAY NOW!</a>
+        <a href="/game" class="btn-manga btn-success" style="font-size: 1.8rem; padding: 20px 40px;">🔥 PLAY NOW!</a>
       </div>
 
       <!-- Stats Panel -->
@@ -250,23 +250,6 @@
       }
       window.location.href = '/login';
     }
-
-    // Theme toggle
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('.theme-toggle').addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = current === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('skeit_theme', next);
-        const btn = document.querySelector('.theme-toggle');
-        btn.setAttribute('data-icon', next === 'dark' ? '☀️' : '🌙');
-      });
-
-      const saved = localStorage.getItem('skeit_theme') || 'light';
-      document.documentElement.setAttribute('data-theme', saved);
-      const btn = document.querySelector('.theme-toggle');
-      btn.setAttribute('data-icon', saved === 'dark' ? '☀️' : '🌙');
-    });
   </script>
 </body>
 </html>

@@ -176,7 +176,7 @@
   </style>
 </head>
 <body class="halftone-bg" style="margin: 0;">
-  <button class="theme-toggle" data-icon="🌙" title="Toggle Theme"></button>
+  <%- include('partials/theme-btn') %>
 
   <div class="leaderboard-container">
     <div class="leaderboard-header">
@@ -244,22 +244,6 @@
     // Load leaderboard on page load
     document.addEventListener('DOMContentLoaded', () => {
       loadLeaderboard();
-
-      // Theme toggle
-      document.querySelector('.theme-toggle').addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = current === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('skeit_theme', next);
-        const btn = document.querySelector('.theme-toggle');
-        btn.setAttribute('data-icon', next === 'dark' ? '☀️' : '🌙');
-      });
-
-      // Initialize theme
-      const saved = localStorage.getItem('skeit_theme') || 'light';
-      document.documentElement.setAttribute('data-theme', saved);
-      const btn = document.querySelector('.theme-toggle');
-      btn.setAttribute('data-icon', saved === 'dark' ? '☀️' : '🌙');
     });
 
     async function logout() {

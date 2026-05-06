@@ -102,7 +102,7 @@
   </style>
 </head>
 <body class="halftone-bg" style="margin: 0;">
-  <button class="theme-toggle" data-icon="🌙" title="Toggle Theme"></button>
+  <%- include('partials/theme-btn') %>
 
   <div class="error-container">
     <div class="error-card">
@@ -115,28 +115,10 @@
         <small>The page you're looking for has been erased from the canvas.</small>
       </p>
 
-      <div class="error-buttons">
-        <a href="/" class="btn-manga">🏠 HOME</a>
-        <a href="/game" class="btn-manga">🎮 PLAY</a>
-        <a href="/leaderboard" class="btn-manga">🏆 SCORES</a>
-      </div>
+      <%- include('partials/nav') %>
     </div>
   </div>
 
-  <script>
-    document.querySelector('.theme-toggle').addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
-      const next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('skeit_theme', next);
-      const btn = document.querySelector('.theme-toggle');
-      btn.setAttribute('data-icon', next === 'dark' ? '☀️' : '🌙');
-    });
-
-    // Initialize theme
-    const saved = localStorage.getItem('skeit_theme') || 'light';
-    document.documentElement.setAttribute('data-theme', saved);
-    document.querySelector('.theme-toggle').setAttribute('data-icon', saved === 'dark' ? '☀️' : '🌙');
-  </script>
+  <script src="/javascripts/auth.js"></script>
 </body>
 </html>
