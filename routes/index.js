@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.render("index", { message: "yo" });
-});
+import { renderHomePage } from "../controllers/leaderboardController.js";
+
+router.get("/", renderHomePage);
 
 export default router;

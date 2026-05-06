@@ -1,12 +1,62 @@
 body {
-    background-color: #f4f4f4;
-    font-family: Arial, sans-serif;
+    background-color: #f7f5ef;
+    color: #2f2a1f;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    margin: 0;
 }
 
-.book-card {
-    background: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.subtitle {
+    color: #6c624d;
+    margin-bottom: 1.5rem;
+}
+
+.panel {
+    background: #ffffff;
+    border: 1px solid #e2dbc8;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(56, 42, 17, 0.06);
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+form {
+    display: grid;
+    gap: 0.6rem;
+}
+
+input {
+    border: 1px solid #ccb98f;
+    border-radius: 8px;
+    padding: 0.6rem;
+}
+
+button {
+    background: #7a5f2d;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    padding: 0.7rem;
+}
+
+ol {
+    padding-left: 1.2rem;
+}
+
+li {
+    align-items: baseline;
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+#formMessage {
+    color: #2f6f3e;
+    min-height: 1.2rem;
 }
