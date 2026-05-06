@@ -11,6 +11,14 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
+// GET /dashboard
+router.get("/dashboard", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  res.render("dashboard", { user: req.session.user });
+});
+
 // GET /game
 router.get("/game", (req, res) => {
   // Check if user is authenticated

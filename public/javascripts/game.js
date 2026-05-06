@@ -759,9 +759,20 @@ function initToolbar() {
   document.getElementById('skip-btn')?.addEventListener('click', () => {
     if (!GameState.isGameActive || GameState.hasEnded || GameState.isSubmitting) return;
     pauseTimerForAI();
-    showEffect('SKIP!', `The word was: ${GameState.currentWord.toUpperCase()}`, '#555', () => {
-      startNewRound();
-      resumeTimerAfterAI();
+    
+    // Apply penalty
+    const penalty = 15;
+    GameState.timeLeft -= penalty;
+    if (GameState.timeLeft < 0) GameState.timeLeft = 0;
+    updateTimerDisplay();
+
+    showEffect('SKIPPED', `-${penalty}s penalty!\nThe word was: ${GameState.currentWord.toUpperCase()}`, '#cc0000', () => {
+      if (GameState.timeLeft <= 0) {
+        onTimeUp();
+      } else {
+        startNewRound();
+        resumeTimerAfterAI();
+      }
     });
   });
 

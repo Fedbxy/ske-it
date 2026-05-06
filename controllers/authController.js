@@ -145,9 +145,50 @@ export async function getSession(req, res, next) {
     if (!req.session.user) {
       return res.status(401).json({ message: "Not authenticated" });
     }
+    
+    // Fetch latest user data to ensure dashboard is up to date
+    const user = await User.findById(req.session.user.id);
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    
+    req.session.user.score = user.score;
+    req.session.user.highScore = user.highScore;
+    req.session.user.gamesPlayed = user.gamesPlayed;
+    
     res.status(200).json({ user: req.session.user });
   } catch (error) {
     console.error("[Auth] Get session error:", error);
+    next(error);
+  }
+}
+
+/**
+ * PUT /auth/update-password — Update user password
+ */
+export async function updatePassword(req, res, next) {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
+    }
+
+    const user = await User.findById(req.session.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.password = await hashPassword(newPassword);
+    await user.save();
+
+    console.log(`[Auth] Password updated for user: ${user.username}`);
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("[Auth] Update password error:", error);
     next(error);
   }
 }

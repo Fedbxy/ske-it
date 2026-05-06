@@ -135,9 +135,10 @@
       </div><!-- /card body -->
 
       <!-- Card Footer -->
-      <div style="border-top:var(--border-thick); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; background:var(--paper2);">
-        <span style="font-family:var(--font-hand); font-size:0.8rem; opacity:0.5;">✏️ SKE-IT v1.0</span>
-        <a href="/leaderboard" style="font-family:var(--font-hand); font-size:0.8rem; color:var(--ink); opacity:0.7; text-decoration:none;">🏆 Leaderboard</a>
+      <div style="border-top:var(--border-thick); padding:12px 20px; display:flex; justify-content:center; gap: 15px; align-items:center; background:var(--paper2);">
+        <a href="/" style="font-family:var(--font-hand); font-size:0.9rem; color:var(--ink); opacity:0.8; text-decoration:none;">🏠 Home</a>
+        <a href="/leaderboard" style="font-family:var(--font-hand); font-size:0.9rem; color:var(--ink); opacity:0.8; text-decoration:none;">🏆 Leaderboard</a>
+        <a href="/matches" style="font-family:var(--font-hand); font-size:0.9rem; color:var(--ink); opacity:0.8; text-decoration:none;">📜 Match Log</a>
       </div>
     </div>
   </div>
@@ -169,8 +170,8 @@
       btn.textContent = 'LOADING...'; btn.disabled = true;
       try {
         await Auth.signIn(username, pass);
-        showSuccess('✅ Welcome back! Loading game...');
-        setTimeout(() => window.location.href = '/game', 800);
+        showSuccess('✅ Welcome back! Loading dashboard...');
+        setTimeout(() => window.location.href = '/dashboard', 800);
       } catch (e) {
         showError(e.message);
         btn.textContent = "LET'S DRAW!"; btn.disabled = false;
@@ -181,10 +182,17 @@
       clearMessages();
       const username = document.getElementById('signup-user').value.trim();
       const pass = document.getElementById('signup-pass').value;
+      const passConfirm = document.getElementById('signup-pass-confirm').value;
+
+      if (pass !== passConfirm) {
+        showError('Passwords do not match.');
+        return;
+      }
+
       try {
         await Auth.signUp(username, pass);
-        showSuccess('✅ Account created! Starting game...');
-        setTimeout(() => window.location.href = '/game', 800);
+        showSuccess('✅ Account created! Loading dashboard...');
+        setTimeout(() => window.location.href = '/dashboard', 800);
       } catch (e) {
         showError(e.message);
       }
@@ -203,8 +211,8 @@
       try {
         const resp = await fetch('/auth/session');
         if (resp.ok) {
-          // Session is valid, redirect to game
-          window.location.href = '/game';
+          // Session is valid, redirect to dashboard
+          window.location.href = '/dashboard';
         } else {
           // Session invalid, clear client storage and stay on login
           sessionStorage.removeItem('skeit_user');
