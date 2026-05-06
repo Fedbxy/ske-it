@@ -61,6 +61,8 @@ export async function signup(req, res, next) {
       id: newUser._id.toString(),
       username: newUser.username,
       score: newUser.score,
+      highScore: newUser.highScore,
+      gamesPlayed: newUser.gamesPlayed,
     };
 
     console.log(`[Auth] User created: ${newUser.username} (${newUser._id})`);
