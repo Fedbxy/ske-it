@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SKE-IT — Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/styles.css" />
   <style>
     /* Decorative speed lines from center */
     .login-bg-lines {
@@ -118,10 +118,6 @@
             <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">USERNAME</label>
             <input id="signup-user" type="text" class="manga-input" placeholder="cool_artist_99" autocomplete="username" />
           </div>
-          <div style="margin-bottom:16px;">
-            <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">EMAIL</label>
-            <input id="signup-email" type="email" class="manga-input" placeholder="you@email.com" autocomplete="email" />
-          </div>
           <div style="margin-bottom:24px;">
             <label style="font-family:var(--font-hand); font-size:0.9rem; display:block; margin-bottom:6px;">PASSWORD</label>
             <input id="signup-pass" type="password" class="manga-input" placeholder="min 6 characters" autocomplete="new-password" />
@@ -141,7 +137,7 @@
       <!-- Card Footer -->
       <div style="border-top:var(--border-thick); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; background:var(--paper2);">
         <span style="font-family:var(--font-hand); font-size:0.8rem; opacity:0.5;">✏️ SKE-IT v1.0</span>
-        <a href="leaderboard.html" style="font-family:var(--font-hand); font-size:0.8rem; color:var(--ink); opacity:0.7; text-decoration:none;">🏆 Leaderboard</a>
+        <a href="/leaderboard" style="font-family:var(--font-hand); font-size:0.8rem; color:var(--ink); opacity:0.7; text-decoration:none;">🏆 Leaderboard</a>
       </div>
     </div>
   </div>
@@ -155,7 +151,7 @@
     }
   </style>
 
-  <script src="auth.js"></script>
+  <script src="/javascripts/auth.js"></script>
   <script>
     function switchTab(tab) {
       document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
@@ -167,14 +163,14 @@
 
     async function handleLogin() {
       clearMessages();
-      const user = document.getElementById('login-user').value.trim();
+      const username = document.getElementById('login-user').value.trim();
       const pass = document.getElementById('login-pass').value;
       const btn = document.getElementById('login-btn');
       btn.textContent = 'LOADING...'; btn.disabled = true;
       try {
-        await Auth.signIn(user, pass);
+        await Auth.signIn(username, pass);
         showSuccess('✅ Welcome back! Loading game...');
-        setTimeout(() => window.location.href = 'game.html', 800);
+        setTimeout(() => window.location.href = '/game', 800);
       } catch (e) {
         showError(e.message);
         btn.textContent = "LET'S DRAW!"; btn.disabled = false;
@@ -183,13 +179,12 @@
 
     async function handleSignUp() {
       clearMessages();
-      const user = document.getElementById('signup-user').value.trim();
-      const email = document.getElementById('signup-email').value.trim();
+      const username = document.getElementById('signup-user').value.trim();
       const pass = document.getElementById('signup-pass').value;
       try {
-        await Auth.signUp(user, email, pass);
+        await Auth.signUp(username, pass);
         showSuccess('✅ Account created! Starting game...');
-        setTimeout(() => window.location.href = 'game.html', 800);
+        setTimeout(() => window.location.href = '/game', 800);
       } catch (e) {
         showError(e.message);
       }
@@ -203,9 +198,21 @@
       }
     });
 
-    // Redirect if already logged in
-    document.addEventListener('DOMContentLoaded', () => {
-      if (Session.isLoggedIn()) window.location.href = 'game.html';
+    // Verify session with server before redirecting
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const resp = await fetch('/auth/session');
+        if (resp.ok) {
+          // Session is valid, redirect to game
+          window.location.href = '/game';
+        } else {
+          // Session invalid, clear client storage and stay on login
+          sessionStorage.removeItem('skeit_user');
+        }
+      } catch (err) {
+        // Network error, clear storage to be safe
+        sessionStorage.removeItem('skeit_user');
+      }
     });
   </script>
 </body>

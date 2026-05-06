@@ -1,13 +1,13 @@
 import express from "express";
 const router = express.Router();
 
-import { getLeaderboard, submitScore } from "../controllers/leaderboardController.js";
+import { getLeaderboard, submitGame } from "../controllers/authController.js";
 
 // GET /api/leaderboard
 router.get("/leaderboard", getLeaderboard);
 
 // POST /api/leaderboard
-router.post("/leaderboard", submitScore);
+router.post("/leaderboard", submitGame);
 
 // JSON error handler for API routes
 router.use((err, req, res, next) => {
