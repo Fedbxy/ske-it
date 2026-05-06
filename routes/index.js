@@ -25,4 +25,9 @@ router.get("/leaderboard", (req, res) => {
   res.render("leaderboard");
 });
 
+// GET /matches
+router.get("/matches", (req, res) => {
+  res.render("matches");
+});
+
 export default router;

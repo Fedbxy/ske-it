@@ -31,6 +31,7 @@ let GameState = {
   usedWords: [],
   wordsCorrect: 0,
   totalScore: 0,
+  wordLog: [],
   timeLeft: CONFIG.TOTAL_GAME_TIME,
   timerInterval: null,
   isDrawing: false,
@@ -62,6 +63,7 @@ function resetGameState() {
   GameState.usedWords = [];
   GameState.wordsCorrect = 0;
   GameState.totalScore = 0;
+  GameState.wordLog = [];
   GameState.timeLeft = CONFIG.TOTAL_GAME_TIME;
   GameState.isSubmitting = false;
   GameState.isGameActive = true;
@@ -78,6 +80,7 @@ function saveGameState() {
       usedWords: GameState.usedWords,
       wordsCorrect: GameState.wordsCorrect,
       totalScore: GameState.totalScore,
+      wordLog: GameState.wordLog,
       timeLeft: GameState.timeLeft,
       isGameActive: GameState.isGameActive,
       isPausedForAI: GameState.isPausedForAI,
@@ -127,6 +130,7 @@ function restoreSavedGameState() {
     GameState.usedWords = Array.isArray(saved.usedWords) ? saved.usedWords : [];
     GameState.wordsCorrect = Number(saved.wordsCorrect) || 0;
     GameState.totalScore = Number(saved.totalScore) || 0;
+    GameState.wordLog = Array.isArray(saved.wordLog) ? saved.wordLog : [];
     GameState.timeLeft = adjustedTime;
     GameState.isGameActive = true;
     GameState.isPausedForAI = false;
@@ -456,6 +460,7 @@ async function submitDrawing() {
       const earned = result.score || 100; // Use AI score directly
       GameState.wordsCorrect++;
       GameState.totalScore += earned;
+      GameState.wordLog.push({ word: GameState.currentWord, score: earned });
       GameState.isSubmitting = false;
       updateRoundDisplay();
 
@@ -628,7 +633,12 @@ function endGame() {
       const resp = await fetch('/api/leaderboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ playerName, score: GameState.totalScore, roundsPlayed: GameState.wordsCorrect })
+        body: JSON.stringify({ 
+          playerName, 
+          score: GameState.totalScore, 
+          roundsPlayed: GameState.wordsCorrect,
+          wordLog: GameState.wordLog
+        })
       });
 
       const statusEl = document.createElement('div');

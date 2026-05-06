@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKE-IT — Match Log</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .log-container {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 20px;
+    }
+
+    .log-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .log-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      text-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .log-subtitle {
+      font-family: var(--font-hand);
+      font-size: 1.1rem;
+      opacity: 0.7;
+    }
+
+    .log-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--paper2);
+      border: 3px solid var(--ink);
+      box-shadow: 6px 6px 0 var(--ink);
+      padding: 0;
+    }
+
+    .log-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .log-item {
+      padding: 16px 20px;
+      border-bottom: 2px solid var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-hand);
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-info {
+      flex: 1;
+    }
+
+    .log-name {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+    }
+
+    .log-stats {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    .log-score {
+      text-align: right;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: bold;
+      min-width: 100px;
+    }
+
+    .time-ago {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn-manga {
+      padding: 12px 20px;
+      border: 3px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--ink);
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-manga:hover {
+      background: var(--paper2);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      border: 2px solid var(--ink);
+      background: var(--paper2);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      z-index: 50;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-family: var(--font-hand);
+    }
+  </style>
+</head>
+<body class="halftone-bg" style="margin: 0;">
+  <button class="theme-toggle" data-icon="🌙" title="Toggle Theme"></button>
+
+  <div class="log-container">
+    <div class="log-header">
+      <div class="log-title">📜 MATCH LOG</div>
+      <div class="log-subtitle">See what everyone is playing in real-time!</div>
+    </div>
+
+    <div class="log-card">
+      <div id="loading" class="loading">
+        Loading matches...
+      </div>
+      <ol id="logList" class="log-list" style="display: none;">
+      </ol>
+    </div>
+
+    <div class="controls">
+      <a href="/" class="btn-manga">← HOME</a>
+      <a href="/game" class="btn-manga">🔥 PLAY NOW</a>
+      <button class="btn-manga" onclick="loadMatches()">🔄 REFRESH</button>
+    </div>
+  </div>
+
+  <script src="/javascripts/auth.js"></script>
+  <script>
+    const logList = document.getElementById('logList');
+    const loadingDiv = document.getElementById('loading');
+
+    function timeAgo(dateInput) {
+      const now = new Date();
+      const past = new Date(dateInput);
+      const diffMs = now - past;
+      const diffSecs = Math.floor(diffMs / 1000);
+      const diffMins = Math.floor(diffSecs / 60);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffSecs < 60) return diffSecs + 's ago';
+      if (diffMins < 60) return diffMins + 'm ago';
+      if (diffHours < 24) return diffHours + 'h ago';
+      return diffDays + 'd ago';
+    }
+
+    async function loadMatches() {
+      try {
+        loadingDiv.style.display = 'block';
+        logList.style.display = 'none';
+        
+        const response = await fetch('/api/matches?limit=50');
+        if (!response.ok) throw new Error('Failed to load');
+
+        const data = await response.json();
+        loadingDiv.style.display = 'none';
+
+        if (!data.matches || data.matches.length === 0) {
+          loadingDiv.style.display = 'block';
+          loadingDiv.textContent = 'No recent matches. Be the first to play!';
+          return;
+        }
+
+        logList.innerHTML = data.matches.map((entry) => {
+          let wordsHtml = '';
+          if (entry.wordLog && entry.wordLog.length > 0) {
+            wordsHtml = '<div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">';
+            entry.wordLog.forEach(w => {
+              wordsHtml += `<span style="background: var(--paper); border: 2px solid var(--ink); padding: 2px 8px; font-size: 0.8rem; border-radius: 4px;">${w.word} <strong style="color: ${w.score > 200 ? '#006600' : '#cc0000'};">${w.score}</strong></span>`;
+            });
+            wordsHtml += '</div>';
+          }
+
+          return `
+            <li class="log-item" style="flex-direction: column; align-items: stretch;">
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div class="log-info">
+                  <div class="log-name">${entry.username || 'Anonymous'}</div>
+                  <div class="log-stats">🎨 ${entry.wordsDrawn || 0} words drawn</div>
+                  <div class="time-ago">🕒 ${timeAgo(entry.createdAt)}</div>
+                </div>
+                <div class="log-score" style="color: ${entry.score > 2000 ? '#cc0000' : 'var(--ink)'};">
+                  ${entry.score || 0} pts
+                </div>
+              </div>
+              ${wordsHtml}
+            </li>
+          `;
+        }).join('');
+
+        logList.style.display = 'block';
+      } catch (err) {
+        console.error('Match log error:', err);
+        loadingDiv.style.display = 'block';
+        loadingDiv.textContent = 'Failed to load recent matches.';
+      }
+    }
+
+    // Load matches on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMatches();
+
+      // Theme toggle logic
+      document.querySelector('.theme-toggle').addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('skeit_theme', next);
+        const btn = document.querySelector('.theme-toggle');
+        btn.setAttribute('data-icon', next === 'dark' ? '☀️' : '🌙');
+      });
+
+      // Initialize theme
+      const saved = localStorage.getItem('skeit_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      const btn = document.querySelector('.theme-toggle');
+      btn.setAttribute('data-icon', saved === 'dark' ? '☀️' : '🌙');
+    });
+  </script>
+</body>
+</html>
