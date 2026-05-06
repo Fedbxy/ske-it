@@ -6,7 +6,6 @@ import {
   signin,
   logout,
   getSession,
-  getLeaderboard
 } from "../controllers/authController.js";
 
 // POST /auth/signup
@@ -20,8 +19,5 @@ router.post("/logout", logout);
 
 // GET /auth/session
 router.get("/session", getSession);
-
-// GET /auth/leaderboard
-router.get("/leaderboard", getLeaderboard);
 
 export default router;

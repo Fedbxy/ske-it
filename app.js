@@ -29,12 +29,12 @@ app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-import routes from "./routes/index.js";
-import apiRoutes from "./routes/api.js";
-import authRoutes from "./routes/auth.js";
-import drawRoutes from "./routes/draw.js";
+import indexRoutes from "./routes/indexRoutes.js";
+import apiRoutes from "./routes/apiRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import drawRoutes from "./routes/drawRoutes.js";
 
-app.use("/", routes);
+app.use("/", indexRoutes);
 app.use("/api", apiRoutes);
 app.use("/api", drawRoutes);
 app.use("/auth", authRoutes);
