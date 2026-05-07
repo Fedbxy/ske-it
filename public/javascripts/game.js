@@ -796,13 +796,6 @@ document.addEventListener('DOMContentLoaded', () => {
   updateTimerDisplay();
   startTimer();
 
-  // Logout button
-  document.getElementById('logout-btn')?.addEventListener('click', () => {
-    if (typeof Auth !== 'undefined') Auth.signOut();
-  });
-
-
-
   // Handle window resize
   let resizeTimeout;
   window.addEventListener('resize', () => {

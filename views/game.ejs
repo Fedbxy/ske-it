@@ -114,7 +114,7 @@
           </div>
         </div>
 
-        <button id="logout-btn" class="sidebar-btn logout" onclick="logout()">🚪 LOGOUT</button>
+        <button id="exit-btn" class="sidebar-btn logout" onclick="exitGame()">🚪 EXIT GAME</button>
       </div>
     </div>
   </div>
@@ -122,13 +122,10 @@
   <script src="/javascripts/auth.js"></script>
   <script src="/javascripts/game.js"></script>
   <script>
-    async function logout() {
-      if (!confirm('Are you sure you want to logout?')) return;
-      if (typeof Auth !== 'undefined') {
-        await Auth.signOut();
-        return;
+    function exitGame() {
+      if (confirm('Are you sure you want to exit the game? Your progress will be saved.')) {
+        window.location.href = '/dashboard';
       }
-      window.location.href = '/login';
     }
   </script>
 </body>
