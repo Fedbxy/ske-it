@@ -1,4 +1,5 @@
 import express from "express";
+import User from "../models/userModel.js";
 const router = express.Router();
 
 // GET /
@@ -12,20 +13,36 @@ router.get("/login", (req, res) => {
 });
 
 // GET /dashboard
-router.get("/dashboard", (req, res) => {
+router.get("/dashboard", async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
   }
-  res.render("dashboard", { user: req.session.user });
+  
+  try {
+    const user = await User.findById(req.session.user.id).lean();
+    if (!user) {
+      return res.redirect("/login");
+    }
+    res.render("dashboard", { user });
+  } catch (error) {
+    console.error("[Dashboard] Error fetching fresh user:", error);
+    res.render("dashboard", { user: req.session.user }); // Fallback
+  }
 });
 
 // GET /game
-router.get("/game", (req, res) => {
+router.get("/game", async (req, res) => {
   // Check if user is authenticated
   if (!req.session.user) {
     return res.redirect("/login");
   }
-  res.render("game", { user: req.session.user });
+  
+  try {
+    const user = await User.findById(req.session.user.id).lean();
+    res.render("game", { user: user || req.session.user });
+  } catch (error) {
+    res.render("game", { user: req.session.user });
+  }
 });
 
 // GET /leaderboard
