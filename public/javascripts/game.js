@@ -109,6 +109,7 @@ let GameState = {
   endAfterSubmit: false,
   hasEnded: false,
   lastSubmissionTime: 0,
+  hasStrokes: false,
 };
 
 function getCurrentUsername() {
@@ -240,7 +241,11 @@ function clearCanvas(resetStrokes = true) {
   if (!GameState.ctx) return;
   GameState.ctx.fillStyle = '#ffffff';
   GameState.ctx.fillRect(0, 0, GameState.canvas.width, GameState.canvas.height);
-  if (resetStrokes) GameState.strokes = [];
+  if (resetStrokes) {
+    GameState.strokes = [];
+    GameState.hasStrokes = false;
+    document.getElementById('submit-btn')?.setAttribute('disabled', 'true');
+  }
 }
 
 function touchToMouse(e) {
@@ -262,6 +267,11 @@ function startDraw(e) {
   const pos = getPos(e);
   GameState.lastX = pos.x;
   GameState.lastY = pos.y;
+
+  if (!GameState.hasStrokes) {
+    GameState.hasStrokes = true;
+    document.getElementById('submit-btn')?.removeAttribute('disabled');
+  }
 
   // Dot on click
   GameState.ctx.beginPath();
@@ -309,11 +319,18 @@ function startNewRound() {
 
   GameState.currentWord = getNextWord();
   GameState.isSubmitting = false;
+  GameState.hasStrokes = false;
 
   clearCanvas();
   updateWordDisplay();
   updateHintText('');
-  document.getElementById('submit-btn')?.removeAttribute('disabled');
+  
+  const submitBtn = document.getElementById('submit-btn');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '✓ SUBMIT!';
+    submitBtn.classList.remove('scanning');
+  }
 
   // Reset tool buttons
   setEraseMode(false);
