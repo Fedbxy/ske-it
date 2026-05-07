@@ -206,12 +206,12 @@ body {
 
 /* ===== MANGA INPUTS ===== */
 .manga-input {
-  font-family: var(--font-hand);
+  font-family: var(--font-body);
   background: var(--paper);
   color: var(--ink);
   border: var(--border-thick);
   padding: 10px 16px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   outline: none;
   box-shadow: var(--shadow-sm);
   width: 100%;
