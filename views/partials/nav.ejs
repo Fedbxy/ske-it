@@ -2,13 +2,13 @@
   <a href="/" class="btn-manga" style="text-decoration: none;">🏠 HOME</a>
   <% if (typeof user !== 'undefined' && user) { %>
     <a href="/dashboard" class="btn-manga" style="text-decoration: none;">👤 DASHBOARD</a>
-  <% } else { %>
-    <a href="/login" class="btn-manga" style="text-decoration: none;">👤 LOGIN</a>
   <% } %>
   <a href="/leaderboard" class="btn-manga" style="text-decoration: none;">🏆 LEADERBOARD</a>
   <a href="/matches" class="btn-manga" style="text-decoration: none; border-color: #555;">📜 MATCH LOG</a>
   <% if (typeof user !== 'undefined' && user) { %>
     <button class="btn-manga btn-danger" onclick="logout()">🚪 LOGOUT</button>
+  <% } else { %>
+    <a href="/login" class="btn-manga" style="text-decoration: none;">👤 LOGIN</a>
   <% } %>
 </div>
 
