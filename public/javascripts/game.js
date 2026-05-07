@@ -15,14 +15,73 @@ const WORD_LIST = [
   'cat', 'dog', 'fish', 'bird', 'rabbit', 'elephant', 'giraffe', 'penguin', 'lion', 'shark',
   'butterfly', 'octopus', 'turtle', 'horse', 'duck', 'owl', 'bear', 'monkey', 'frog', 'whale',
   'cow', 'pig', 'sheep', 'goat', 'zebra', 'kangaroo', 'snail', 'crab', 'squirrel', 'dolphin',
+  'snake', 'tiger', 'cheetah', 'rhino', 'hippo', 'crocodile', 'alligator', 'bat', 'camel', 'deer',
+  'flamingo', 'gorilla', 'iguana', 'jellyfish', 'koala', 'llama', 'moose', 'ostrich', 'peacock', 'raccoon',
+
   // Objects
   'bicycle', 'clock', 'umbrella', 'guitar', 'camera', 'telephone', 'lamp', 'chair', 'key', 'book',
   'pizza', 'rocket', 'crown', 'diamond', 'balloon', 'cloud', 'mountain', 'tree', 'flower', 'sun',
   'car', 'truck', 'house', 'phone', 'watch', 'hat', 'shoe', 'bag', 'table', 'pencil',
-  // Actions / harder
+  'scissors', 'knife', 'fork', 'spoon', 'plate', 'bowl', 'cup', 'glass', 'bottle', 'box',
+  
+  // Actions
   'sleeping', 'flying', 'running', 'swimming', 'dancing', 'cooking', 'jumping', 'reading', 'singing', 'laughing',
-  // Scenes
+  'crying', 'sneezing', 'climbing', 'painting', 'skating', 'fishing', 'shopping', 'sneaking', 'yawning', 'juggling',
+  'digging', 'kicking', 'punching', 'throwing', 'catching', 'hiding', 'sweeping', 'typing', 'writing', 'whispering',
+  
+  // Scenes & Environments
   'beach', 'rainbow', 'volcano', 'castle', 'lighthouse', 'forest', 'desert', 'garden', 'bridge', 'city',
+  'farm', 'hospital', 'school', 'playground', 'supermarket', 'library', 'stadium', 'airport', 'cave', 'island',
+  'canyon', 'waterfall', 'swamp', 'jungle', 'tundra', 'glacier', 'oasis', 'cemetery', 'amusement park', 'zoo',
+
+  // Food & Drink
+  'hamburger', 'ice cream', 'banana', 'apple', 'donut', 'sushi', 'cheese', 'taco', 'pancake', 'watermelon',
+  'coffee', 'carrot', 'grapes', 'sandwich', 'hotdog', 'popcorn', 'broccoli', 'cookie', 'egg', 'pineapple',
+  'pizza', 'steak', 'salad', 'soup', 'bread', 'butter', 'milk', 'juice', 'tea', 'cake',
+  'strawberry', 'orange', 'lemon', 'tomato', 'potato', 'onion', 'garlic', 'mushroom', 'pepper', 'chocolate',
+
+  // Professions
+  'doctor', 'teacher', 'police', 'firefighter', 'astronaut', 'chef', 'farmer', 'artist', 'pilot', 'ninja',
+  'detective', 'scientist', 'magician', 'pirate', 'clown', 'dentist', 'judge', 'soldier', 'mechanic', 'waiter',
+  'plumber', 'electrician', 'carpenter', 'lawyer', 'architect', 'baker', 'butcher', 'tailor', 'barber', 'janitor',
+
+  // Sports & Hobbies
+  'soccer', 'basketball', 'tennis', 'baseball', 'golf', 'volleyball', 'boxing', 'wrestling', 'surfing', 'bowling',
+  'hockey', 'rugby', 'badminton', 'cricket', 'skiing', 'snowboarding', 'gymnastics', 'karate', 'cycling', 'archery',
+  'billiards', 'darts', 'fencing', 'rowing', 'sailing', 'scuba diving', 'skydiving', 'weightlifting', 'yoga', 'chess',
+
+  // Fantasy & Mythical
+  'dragon', 'unicorn', 'mermaid', 'ghost', 'zombie', 'alien', 'fairy', 'vampire', 'wizard', 'monster',
+  'witch', 'goblin', 'troll', 'pegasus', 'phoenix', 'elf', 'cyclops', 'werewolf', 'genie', 'mummy',
+  'centaur', 'griffin', 'kraken', 'minotaur', 'yeti', 'sasquatch', 'gargoyle', 'leprechaun', 'hydra', 'banshee',
+
+  // City & Infrastructure
+  'roundabout', 'intersection', 'highway', 'overpass', 'traffic light', 'crosswalk', 'sidewalk', 'skyscraper', 'billboard', 'subway',
+  'bus stop', 'parking lot', 'toll booth', 'streetlamp', 'fire hydrant', 'sewer', 'alley', 'plaza', 'tunnel', 'monument',
+
+  // Technology & Computers
+  'laptop', 'keyboard', 'mouse', 'monitor', 'server', 'router', 'microchip', 'headphones', 'microphone', 'battery',
+  'printer', 'webcam', 'tablet', 'smartwatch', 'drone', 'robot', 'joystick', 'console', 'cable', 'satellite',
+
+  // Car & Vehicle Detailing / Parts
+  'engine', 'tire', 'steering wheel', 'brake', 'seatbelt', 'windshield', 'headlight', 'bumper', 'exhaust', 'mirror',
+  'sponge', 'soap', 'wax', 'polish', 'brush', 'towel', 'hose', 'vacuum', 'garage', 'dashboard',
+
+  // Space
+  'planet', 'galaxy', 'asteroid', 'comet', 'sun', 'moon', 'star', 'black hole', 'nebula', 'meteor',
+  'telescope', 'spaceship', 'space station', 'lunar rover', 'orbit', 'eclipse', 'constellation', 'milky way', 'observatory', 'supernova',
+
+  // Clothing & Accessories
+  'shirt', 'pants', 'dress', 'skirt', 'jacket', 'coat', 'sweater', 'socks', 'gloves', 'scarf',
+  'tie', 'belt', 'glasses', 'sunglasses', 'necklace', 'bracelet', 'ring', 'earrings', 'helmet', 'backpack',
+
+  // Household & Furniture
+  'sofa', 'bed', 'wardrobe', 'bookshelf', 'television', 'refrigerator', 'microwave', 'oven', 'toaster', 'blender',
+  'bathtub', 'toilet', 'sink', 'mirror', 'rug', 'curtain', 'pillow', 'blanket', 'fan', 'heater',
+
+  // Body Parts
+  'eye', 'nose', 'hand', 'foot', 'ear', 'mouth', 'tooth', 'brain', 'heart', 'bone',
+  'thumb', 'finger', 'toe', 'tongue', 'muscle', 'skeleton', 'hair', 'leg', 'arm', 'lips'
 ];
 
 // ======= GAME STATE =======
