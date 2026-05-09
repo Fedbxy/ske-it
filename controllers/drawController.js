@@ -59,7 +59,7 @@ Grade the drawing's quality from 0 to 100. This is a strict linear scale.
 0 = Completely unrecognizable or blank.
 
 STEP 5: VERDICT
-Determine if the drawing is recognizable as "${targetWord}". Set to true if the score is 25 or higher, otherwise false.
+Determine if the drawing is recognizable as "${targetWord}". If not, it should receive a score of 0.
 
 RESPONSE FORMAT:
 Output strictly in the following JSON format.
